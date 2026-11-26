@@ -1,0 +1,33 @@
+{
+  "name": "neardrop-lan-transfer",
+  "version": "1.0.0",
+  "description": "邻传 NearDrop — 在同一个 Wi-Fi 下用浏览器互传文件的零依赖本地 Web 服务",
+  "main": "server.js",
+  "author": "飞翔的哈耶克",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/18020912367/neardrop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/18020912367/neardrop/issues"
+  },
+  "homepage": "https://github.com/18020912367/neardrop#readme",
+  "keywords": [
+    "lan",
+    "file-transfer",
+    "file-sharing",
+    "wifi",
+    "local-network",
+    "nodejs",
+    "zero-dependencies",
+    "self-hosted"
+  ],
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/e2e.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

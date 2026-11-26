@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f4f1ea" />
+    <meta name="color-scheme" content="light" />
+    <meta name="description" content="邻传 NearDrop：在同一个 Wi-Fi 下，用浏览器把文件直接传给身边的设备。无需安装，不经过云端。" />
+    <title>邻传 NearDrop · 局域网文件互传</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <svg class="svg-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <symbol id="i-send" viewBox="0 0 24 24">
+        <path d="M21 3 10.8 13.2M21 3l-6.4 18-3.8-7.8L3 9.4 21 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="i-link" viewBox="0 0 24 24">
+        <path d="M10.5 13.5a4.2 4.2 0 0 0 5.9 0l2.8-2.8a4.2 4.2 0 1 0-5.9-5.9l-1.6 1.6M13.5 10.5a4.2 4.2 0 0 0-5.9 0l-2.8 2.8a4.2 4.2 0 1 0 5.9 5.9l1.6-1.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="i-link-off" viewBox="0 0 24 24">
+        <path d="M9.6 14.4a4.2 4.2 0 0 0 5.9 0l1.2-1.2m3.8-3.8a4.2 4.2 0 0 0-5.9-5.9l-1.6 1.6M13.5 10.5a4.2 4.2 0 0 0-1.3-.9M10.5 13.5l1.3.9M4 4l16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="i-wifi" viewBox="0 0 24 24">
+        <path d="M3.5 8.8a13.5 13.5 0 0 1 17 0M6.8 12.4a8.5 8.5 0 0 1 10.4 0M10 15.9a3.7 3.7 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        <circle cx="12" cy="19.3" r="1.2" fill="currentColor"/>
+      </symbol>
+      <symbol id="i-edit" viewBox="0 0 24 24">
+        <path d="m14.7 5.3 4 4M4 20l4.3-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="i-refresh" viewBox="0 0 24 24">
+        <path d="M20 7v5h-5M4 17v-5h5M6.1 8.2A7.5 7.5 0 0 1 19.8 11M18 15.8A7.5 7.5 0 0 1 4.3 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24">
+        <path d="M5 12h14m-5-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="i-close" viewBox="0 0 24 24">
+        <path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="i-upload" viewBox="0 0 24 24">
+        <path d="M12 16V4m0 0L7 9m5-5 5 5M4 15v3.5A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5V15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="i-download" viewBox="0 0 24 24">
+        <path d="M12 4v12m0 0 5-5m-5 5-5-5M4 16v2.5A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5V16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="i-check" viewBox="0 0 24 24">
+        <path d="m5 12.5 4.5 4.5L19 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="i-file" viewBox="0 0 24 24">
+        <path d="M6 3h8l4 4v14H6V3Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        <path d="M14 3v5h4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="i-image" viewBox="0 0 24 24">
+        <rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.7"/>
+        <circle cx="8.5" cy="9.5" r="1.5" fill="currentColor"/>
+        <path d="m5 18 5-5 3.5 3.5 2.5-2.5 3 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="i-video" viewBox="0 0 24 24">
+        <rect x="3" y="5" width="18" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.7"/>
+        <path d="m10 9 5 3-5 3V9Z" fill="currentColor"/>
+      </symbol>
+      <symbol id="i-music" viewBox="0 0 24 24">
+        <path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        <circle cx="6.5" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/>
+        <circle cx="16.5" cy="16" r="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/>
+      </symbol>
+      <symbol id="i-archive" viewBox="0 0 24 24">
+        <path d="M4 8h16v12H4V8ZM3 4h18v4H3V4Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        <path d="M10 12h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="i-code" viewBox="0 0 24 24">
+        <path d="m8 8-4 4 4 4m8-8 4 4-4 4m-2-11-4 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="i-pdf" viewBox="0 0 24 24">
+        <path d="M6 3h8l4 4v14H6V3Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        <path d="M9 16v-3h1.5a1.5 1.5 0 0 1 0 3H9Zm5 0v-3h1a1.5 1.5 0 0 1 1.5 1.5v0A1.5 1.5 0 0 1 15 16h-1Z" fill="none" stroke="currentColor" stroke-width="1.2"/>
+      </symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24">
+        <path d="M12 3 19 6v5.5c0 4.3-2.8 7.7-7 9.5-4.2-1.8-7-5.2-7-9.5V6l7-3Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        <path d="m9 12 2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="i-monitor" viewBox="0 0 24 24">
+        <rect x="3" y="4" width="18" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/>
+        <path d="M8 21h8m-4-4v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="i-phone" viewBox="0 0 24 24">
+        <rect x="7" y="2.5" width="10" height="19" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/>
+        <path d="M10.5 18.5h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24">
+        <rect x="8" y="8" width="12" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/>
+        <path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h1" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="i-info" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.7"/>
+        <path d="M12 11v5m0-8.3v.3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.7"/>
+        <path d="M12 7v5l3.2 2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24">
+        <path d="M12 3 2.8 20h18.4L12 3Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        <path d="M12 9v5m0 2.8v.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24">
+        <path d="M4 7h16M9 7V4h6v3m-8 0 1 14h8l1-14M10 11v6m4-6v6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="i-chevron" viewBox="0 0 24 24">
+        <path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="i-spark" viewBox="0 0 24 24">
+        <path d="M12 2.5c.7 5.8 3.7 8.8 9.5 9.5-5.8.7-8.8 3.7-9.5 9.5-.7-5.8-3.7-8.8-9.5-9.5 5.8-.7 8.8-3.7 9.5-9.5Z" fill="currentColor"/>
+      </symbol>
+      <symbol id="i-lan" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <rect x="14" y="15" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M6.5 9v4.5h11V15M17.5 9V3h-7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </symbol>
+    </svg>
+
+    <div class="ambient ambient--one" aria-hidden="true"></div>
+    <div class="ambient ambient--two" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="/" aria-label="邻传 NearDrop 首页">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 40 40" fill="none">
+              <rect width="40" height="40" rx="13" fill="currentColor"/>
+              <path d="M10.5 28.5C16 28.5 17 21.7 21.3 17.4c3.4-3.4 8.2-3.3 8.2-3.3s.1 4.8-3.3 8.2c-4.3 4.3-11.1 5.3-11.1 10.8" stroke="white" stroke-width="2.4" stroke-linecap="round"/>
+              <circle cx="13.2" cy="13.2" r="2.7" fill="white"/>
+            </svg>
+          </span>
+          <span class="brand-copy"><strong>邻传</strong><span>NEARDROP</span></span>
+        </a>
+
+        <div class="topbar-actions">
+          <div class="net-status" id="netStatus" role="status" aria-live="polite">
+            <span class="status-dot"></span>
+            <span id="netLabel">正在连接局域网…</span>
+          </div>
+          <button class="btn btn-ghost invite-btn" id="inviteBtn" type="button">
+            <svg class="icon"><use href="#i-lan"></use></svg>
+            <span>邀请设备</span>
+          </button>
+          <button class="profile-chip" id="profileBtn" type="button" aria-label="修改我的昵称">
+            <span class="avatar avatar--sm" id="selfAvatar" aria-hidden="true">·</span>
+            <span class="profile-copy">
+              <strong id="selfName">正在加入…</strong>
+              <small id="selfDevice">本机</small>
+            </span>
+            <svg class="icon profile-edit" aria-hidden="true"><use href="#i-edit"></use></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar" aria-label="附近设备">
+        <div class="sidebar-card">
+          <div class="section-heading">
+            <div>
+              <p class="kicker">NEARBY</p>
+              <h2>附近设备 <span class="count-pill" id="peerCount">0</span></h2>
+            </div>
+            <button class="icon-btn" id="refreshBtn" type="button" title="刷新设备列表" aria-label="刷新设备列表">
+              <svg class="icon"><use href="#i-refresh"></use></svg>
+            </button>
+          </div>
+          <p class="section-note">同一 Wi-Fi 下自动发现。点选对方，等两边都确认后即可互传。</p>
+
+          <div id="pendingSpot"></div>
+          <div class="peer-list" id="peerList" aria-live="polite">
+            <div class="peer-skeleton">
+              <span></span><div><i></i><i></i></div>
+            </div>
+          </div>
+
+          <div class="sidebar-foot">
+            <span class="foot-mark"><svg class="icon"><use href="#i-shield"></use></svg></span>
+            <div>
+              <strong>只在本地局域网流转</strong>
+              <p>文件中转发生在这台服务器上，不经过互联网。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-help">
+          <span class="help-spark"><svg class="icon"><use href="#i-spark"></use></svg></span>
+          <p>对方不在列表里？确认两台设备连接的是同一个 Wi-Fi，然后刷新。</p>
+          <button class="text-btn" id="helpBtn" type="button">使用帮助 <svg class="icon"><use href="#i-arrow"></use></svg></button>
+        </div>
+      </aside>
+
+      <section class="stage" aria-live="polite">
+        <section class="empty-state" id="emptyState">
+          <div class="empty-copy">
+            <span class="hero-badge"><svg class="icon"><use href="#i-wifi"></use></svg> 无需安装 · 无需登录</span>
+            <p class="kicker">LOCAL FILE DROP</p>
+            <h1>把文件，<br /><span class="accent-underline">递给身边的人。</span></h1>
+            <p class="lede">同一个 Wi-Fi，两台设备，选中彼此，确认连接。不经过云端，也没有复杂的配对码。</p>
+
+            <div class="steps">
+              <div class="step">
+                <span class="step-num">01</span>
+                <div><strong>打开同一网页</strong><small>两台设备连接同一个 Wi-Fi</small></div>
+              </div>
+              <div class="step">
+                <span class="step-num">02</span>
+                <div><strong>选中对方的设备</strong><small>对方确认连接请求</small></div>
+              </div>
+              <div class="step">
+                <span class="step-num">03</span>
+                <div><strong>选文件，开始传</strong><small>保存到对方的浏览器下载目录</small></div>
+              </div>
+            </div>
+
+            <button class="text-btn empty-invite" id="emptyInviteBtn" type="button">
+              看看怎么让另一台设备加入
+              <svg class="icon"><use href="#i-arrow"></use></svg>
+            </button>
+          </div>
+
+          <div class="hero-art-wrap" aria-hidden="true">
+            <svg class="hero-art" viewBox="0 0 560 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="hero-glow" x1="104" y1="76" x2="468" y2="330" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#3355E8" stop-opacity=".16"/>
+                  <stop offset=".55" stop-color="#D95032" stop-opacity=".07"/>
+                  <stop offset="1" stop-color="#3355E8" stop-opacity="0"/>
+                </linearGradient>
+                <linearGradient id="screen-left" x1="104" y1="132" x2="260" y2="264" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#FFFFFF"/>
+                  <stop offset="1" stop-color="#ECE9FF"/>
+                </linearGradient>
+                <linearGradient id="screen-right" x1="376" y1="116" x2="464" y2="298" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#FFF7F2"/>
+                  <stop offset="1" stop-color="#FFE8DE"/>
+                </linearGradient>
+                <filter id="soft-shadow" x="-30%" y="-30%" width="160%" height="180%">
+                  <feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#1A1B2E" flood-opacity=".12"/>
+                </filter>
+                <filter id="chip-shadow" x="-40%" y="-40%" width="180%" height="200%">
+                  <feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#1A1B2E" flood-opacity=".16"/>
+                </filter>
+                <filter id="blur-circle" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="26"/>
+                </filter>
+              </defs>
+
+              <circle cx="280" cy="190" r="178" fill="url(#hero-glow)"/>
+              <circle cx="280" cy="190" r="174" stroke="#1A1B2E" stroke-opacity=".06" stroke-dasharray="2 8"/>
+              <circle cx="280" cy="190" r="120" stroke="#1A1B2E" stroke-opacity=".05"/>
+              <ellipse cx="210" cy="318" rx="125" ry="16" fill="#1A1B2E" fill-opacity=".06" filter="url(#blur-circle)"/>
+              <ellipse cx="423" cy="318" rx="58" ry="12" fill="#1A1B2E" fill-opacity=".07" filter="url(#blur-circle)"/>
+
+              <path d="M229 198c38-60 100-67 161-22" stroke="#3355E8" stroke-opacity=".3" stroke-width="1.7" stroke-dasharray="4 7" stroke-linecap="round"/>
+              <path d="M390 176c11 4 21 7 36 12" stroke="#D95032" stroke-opacity=".27" stroke-width="1.7" stroke-dasharray="4 7" stroke-linecap="round"/>
+
+              <g filter="url(#soft-shadow)">
+                <rect x="72" y="139" width="194" height="147" rx="16" fill="#FCFBF7" stroke="#1A1B2E" stroke-opacity=".1"/>
+                <rect x="84" y="151" width="170" height="112" rx="9" fill="url(#screen-left)" stroke="#1A1B2E" stroke-opacity=".08"/>
+                <path d="M146 286h46l13 22H134l12-22Z" fill="#E8E4DA" stroke="#1A1B2E" stroke-opacity=".08"/>
+                <rect x="58" y="304" width="222" height="12" rx="6" fill="#DCD7CB"/>
+                <rect x="103" y="169" width="47" height="6" rx="3" fill="#1A1B2E" fill-opacity=".22"/>
+                <rect x="103" y="184" width="84" height="5" rx="2.5" fill="#1A1B2E" fill-opacity=".09"/>
+                <rect x="103" y="201" width="59" height="38" rx="8" fill="#3355E8" fill-opacity=".1"/>
+                <path d="M117 224h32m-32-7h22" stroke="#3355E8" stroke-width="3" stroke-linecap="round" stroke-opacity=".65"/>
+                <circle cx="205" cy="219" r="14" fill="#3355E8"/>
+                <path d="m199 219 4 4 8-9" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="103" y="249" width="37" height="5" rx="2.5" fill="#1A1B2E" fill-opacity=".09"/>
+                <rect x="146" y="249" width="24" height="5" rx="2.5" fill="#1A1B2E" fill-opacity=".09"/>
+              </g>
+
+              <g filter="url(#soft-shadow)">
+                <rect x="366" y="89" width="114" height="212" rx="27" fill="#FCFBF7" stroke="#1A1B2E" stroke-opacity=".1"/>
+                <rect x="376" y="101" width="94" height="188" rx="19" fill="url(#screen-right)" stroke="#1A1B2E" stroke-opacity=".06"/>
+                <rect x="403" y="93" width="40" height="8" rx="4" fill="#E6E1D6"/>
+                <rect x="390" y="118" width="27" height="6" rx="3" fill="#1A1B2E" fill-opacity=".18"/>
+                <rect x="390" y="131" width="43" height="5" rx="2.5" fill="#1A1B2E" fill-opacity=".08"/>
+                <rect x="390" y="151" width="66" height="52" rx="10" fill="#D95032" fill-opacity=".10"/>
+                <path d="M404 185h12" stroke="#D95032" stroke-width="3" stroke-linecap="round"/>
+                <rect x="390" y="214" width="42" height="5" rx="2.5" fill="#1A1B2E" fill-opacity=".1"/>
+                <rect x="390" y="227" width="58" height="5" rx="2.5" fill="#1A1B2E" fill-opacity=".07"/>
+                <circle cx="456" cy="258" r="13" fill="#D95032" fill-opacity=".14"/>
+                <path d="M451 258h10m-5-5v10" stroke="#D95032" stroke-width="1.8" stroke-linecap="round"/>
+                <rect x="402" y="279" width="46" height="5" rx="2.5" fill="#1A1B2E" fill-opacity=".16"/>
+              </g>
+
+              <g filter="url(#chip-shadow)" class="hero-file">
+                <rect x="241" y="104" width="94" height="62" rx="13" fill="#FFFFFF" stroke="#1A1B2E" stroke-opacity=".08"/>
+                <rect x="254" y="117" width="30" height="36" rx="7" fill="#3355E8" fill-opacity=".1"/>
+                <path d="M261 128h16m-16 7h16m-16 7h10" stroke="#3355E8" stroke-width="2" stroke-linecap="round"/>
+                <rect x="293" y="121" width="28" height="5" rx="2.5" fill="#1A1B2E" fill-opacity=".32"/>
+                <rect x="293" y="133" width="20" height="4" rx="2" fill="#1A1B2E" fill-opacity=".12"/>
+                <rect x="293" y="143" width="24" height="4" rx="2" fill="#1A1B2E" fill-opacity=".08"/>
+              </g>
+
+              <g class="hero-orbit">
+                <circle cx="280" cy="190" r="9" fill="#3355E8"/>
+                <circle cx="280" cy="190" r="18" fill="none" stroke="#3355E8" stroke-opacity=".18"/>
+              </g>
+              <g class="hero-ping">
+                <circle cx="400" cy="157" r="5" fill="#D95032"/>
+                <circle cx="400" cy="157" r="14" fill="none" stroke="#D95032" stroke-opacity=".2"/>
+              </g>
+
+              <g transform="translate(312 237)" filter="url(#chip-shadow)" class="hero-chip">
+                <rect width="49" height="43" rx="12" fill="#1A1B2E"/>
+                <path d="M15 31c7 0 7.6-7.3 12.2-11.9 3.4-3.4 7.8-3.2 7.8-3.2s0 4.4-3.3 7.7C27.3 28 20 29 20 35.5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="16.5" cy="16" r="2.4" fill="white"/>
+              </g>
+            </svg>
+            <div class="hero-caption">
+              <span class="caption-line"></span>
+              <span>两台设备 · 一次确认 · 点对点安心</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="session-panel" id="sessionPanel" hidden>
+          <div class="session-head">
+            <div class="session-identity">
+              <div class="linked-avatars" aria-hidden="true">
+                <span class="avatar avatar--lg" id="peerAvatar">·</span>
+                <span class="link-badge"><svg class="icon"><use href="#i-link"></use></svg></span>
+                <span class="avatar avatar--lg avatar--self" id="selfAvatarSession">·</span>
+              </div>
+              <div class="session-copy">
+                <div class="live-label"><span class="live-dot"></span> 通道已建立</div>
+                <h1 id="sessionTitle">正在建立连接…</h1>
+                <p id="sessionMeta">双方已确认连接</p>
+              </div>
+            </div>
+            <div class="session-actions">
+              <button class="btn btn-quiet-danger" id="disconnectBtn" type="button">
+                <svg class="icon"><use href="#i-link-off"></use></svg>
+                断开连接
+              </button>
+            </div>
+          </div>
+
+          <div class="session-grid">
+            <section class="panel composer-panel" aria-labelledby="composerHeading">
+              <div class="panel-heading">
+                <div>
+                  <p class="kicker">SEND</p>
+                  <h2 id="composerHeading">发送文件</h2>
+                </div>
+                <span class="panel-hint">可多选 · 任意格式</span>
+              </div>
+              <div id="composerBody"></div>
+            </section>
+
+            <section class="panel activity-panel" aria-labelledby="activityHeading">
+              <div class="panel-heading">
+                <div>
+                  <p class="kicker">ACTIVITY</p>
+                  <h2 id="activityHeading">传输动态</h2>
+                </div>
+                <label class="switch" title="文件传输完成后自动交给浏览器保存到默认下载目录">
+                  <input type="checkbox" id="autoDownload" />
+                  <span class="switch-track"><span></span></span>
+                  <span class="switch-label">自动保存</span>
+                </label>
+              </div>
+              <div id="activityBody" class="activity-body"></div>
+            </section>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <span><strong>NEARDROP</strong> · 本地局域网工具</span>
+      <span class="footer-dot"></span>
+      <span>临时文件会在服务重启或超时后清理</span>
+      <button class="footer-help" id="footerHelpBtn" type="button">使用帮助</button>
+    </footer>
+
+    <div id="modalRoot"></div>
+    <div class="toast-stack" id="toastRoot" aria-live="polite" aria-atomic="false"></div>
+  </body>
+</html>
